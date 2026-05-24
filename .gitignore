@@ -27,5 +27,12 @@ go.work.sum
 # env file
 .env
 
-# Editor/IDE
-.idea
+# JetBrains IDEs
+.idea/
+*.iml
+*.iws
+*.ipr
+
+
+# bin
+.bin/

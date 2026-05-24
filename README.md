@@ -1,2 +1,2 @@
-# go-marketplace
-Backend for marketplace
+# ItemService
+ItemService
