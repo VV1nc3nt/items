@@ -4,8 +4,8 @@ import (
 	"context"
 	"os"
 
-	setupdb "github.com/VV1nc3nt/go-marketplace/internal/setup/db"
-	"github.com/VV1nc3nt/go-marketplace/pkg/logger"
+	setupdb "github.com/VV1nc3nt/items/internal/setup/db"
+	"github.com/VV1nc3nt/items/pkg/logger"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/joho/godotenv"
 )
