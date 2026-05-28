@@ -32,6 +32,7 @@ go.work.sum
 *.iml
 *.iws
 *.ipr
+.DS_Store
 
 
 # bin

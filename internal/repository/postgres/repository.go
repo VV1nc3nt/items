@@ -1,11 +1,10 @@
-package service
+package postgres
 
 import (
 	"context"
 	"time"
 
-	pb "github.com/VV1nc3nt/items/internal/pb/items"
-	"github.com/VV1nc3nt/items/internal/repository"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 type CreateItemInput struct {
@@ -29,14 +28,14 @@ type Item struct {
 	UpdatedAt   time.Time
 }
 
-type Service interface {
-	Create(ctx context.Context, req *pb.CreateRequest) (*pb.CreateResponse, error)
+type Repository interface {
+	Create(ctx context.Context, in *CreateItemInput) (Item, error)
 }
 
-type ItemService struct {
-	repo repository.ItemRepository
+type ItemRepository struct {
+	db *pgxpool.Pool
 }
 
-func NewItemService(repo repository.ItemRepository) *ItemService {
-	return &ItemService{repo: repo}
+func New(db *pgxpool.Pool) *ItemRepository {
+	return &ItemRepository{db: db}
 }

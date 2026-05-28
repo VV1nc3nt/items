@@ -5,10 +5,10 @@ import (
 	"net"
 	"os"
 
-	"github.com/VV1nc3nt/items/internal/handler"
+	"github.com/VV1nc3nt/items/internal/handler/create"
 	pb "github.com/VV1nc3nt/items/internal/pb/items"
-	"github.com/VV1nc3nt/items/internal/repository"
-	"github.com/VV1nc3nt/items/internal/service"
+	"github.com/VV1nc3nt/items/internal/repository/postgres"
+	"github.com/VV1nc3nt/items/internal/service/item_manager"
 	setupdb "github.com/VV1nc3nt/items/internal/setup/db"
 	"github.com/VV1nc3nt/items/pkg/logger"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -44,9 +44,9 @@ func run() int {
 	}
 	defer pool.Close()
 
-	repo := repository.NewItemRepository(pool)
-	srv := service.NewItemService(*repo)
-	h := handler.NewItemHandler(*srv)
+	repo := postgres.New(pool)
+	srv := item_manager.New(repo)
+	h := create.New(srv)
 
 	lis, err := net.Listen("tcp", ":50051")
 	if err != nil {
