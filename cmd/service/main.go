@@ -64,6 +64,5 @@ func run() int {
 		return exitErr
 	}
 
-	_ = pool
 	return exitOK
 }

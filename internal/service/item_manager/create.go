@@ -4,13 +4,13 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/VV1nc3nt/items/internal/model"
 	pb "github.com/VV1nc3nt/items/internal/pb/items"
-	"github.com/VV1nc3nt/items/internal/repository/postgres"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
-func (s *ItemService) Create(ctx context.Context, req *ServiceItemInput) (*pb.CreateResponse, error) {
-	repoInput := &postgres.CreateItemInput{
+func (s *ItemService) Create(ctx context.Context, req *model.ItemInput) (*pb.CreateResponse, error) {
+	repoInput := &model.ItemInput{
 		Category:    req.Category,
 		Title:       req.Title,
 		Description: req.Description,
@@ -26,6 +26,7 @@ func (s *ItemService) Create(ctx context.Context, req *ServiceItemInput) (*pb.Cr
 
 	item := &pb.CreateResponse{
 		Item: &pb.Item{
+			Id:          row.ID,
 			Category:    row.Category,
 			Title:       row.Title,
 			Description: row.Description,

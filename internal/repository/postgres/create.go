@@ -3,41 +3,29 @@ package postgres
 import (
 	"context"
 	"fmt"
-	"log"
+
+	"github.com/VV1nc3nt/items/internal/model"
+	"github.com/jackc/pgx/v5"
 )
 
-func (r *ItemRepository) Create(ctx context.Context, in *CreateItemInput) (Item, error) {
+func (r *ItemRepository) Create(ctx context.Context, in *model.ItemInput) (model.Item, error) {
 	query := `
 		INSERT INTO items (category, title, description, image_key, price, quantity)
 		VALUES ($1, $2, $3, $4, $5, $6)
 		RETURNING id, category, title, description, image_key, price, quantity, created_at, updated_at
 	`
 
-	var item Item
-	if err := r.db.QueryRow(
-		ctx,
-		query,
-		in.Category,
-		in.Title,
-		in.Description,
-		in.ImageKey,
-		in.Price,
-		in.Quantity,
-	).Scan(
-		&item.ID,
-		&item.Category,
-		&item.Title,
-		&item.Description,
-		&item.ImageKey,
-		&item.Price,
-		&item.Quantity,
-		&item.CreatedAt,
-		&item.UpdatedAt,
-	); err != nil {
-		return Item{}, fmt.Errorf("repository create item: %w", err)
+	var item model.Item
+	rows, err := r.db.Query(ctx, query)
+	if err != nil {
+		return item, fmt.Errorf("insert item: %w", err)
 	}
+	defer rows.Close()
 
-	log.Printf("created_at: %v, updated_at: %v", item.CreatedAt, item.UpdatedAt)
+	item, err = pgx.CollectOneRow(rows, pgx.RowToStructByName[model.Item])
+	if err != nil {
+		return item, fmt.Errorf("insert item: %w", err)
+	}
 
 	return item, nil
 }
