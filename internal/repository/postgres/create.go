@@ -16,7 +16,16 @@ func (r *ItemRepository) Create(ctx context.Context, in *model.ItemInput) (model
 	`
 
 	var item model.Item
-	rows, err := r.db.Query(ctx, query)
+	rows, err := r.db.Query(
+		ctx,
+		query,
+		in.Category,
+		in.Title,
+		in.Description,
+		in.ImageKey,
+		in.Price,
+		in.Quantity,
+	)
 	if err != nil {
 		return item, fmt.Errorf("insert item: %w", err)
 	}
