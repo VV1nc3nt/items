@@ -7,3 +7,9 @@ install:
 
 protogen:
 	$(LOCAL_BIN)/buf generate proto
+
+mocks:
+	mockery
+
+tests:
+	go test ./...

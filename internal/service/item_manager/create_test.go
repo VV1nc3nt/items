@@ -2,103 +2,103 @@ package item_manager
 
 import (
 	"context"
-	"fmt"
+	"errors"
 	"testing"
 	"time"
 
 	"github.com/VV1nc3nt/items/internal/model"
+	mock "github.com/VV1nc3nt/items/internal/service/item_manager/mocks"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
-type MockRepository struct {
-	mockItem model.Item
-	mockErr  error
-}
+func TestItemServiceCreate(t *testing.T) {
+	now := time.Now()
 
-func (r *MockRepository) Create(ctx context.Context, in *model.ItemInput) (model.Item, error) {
-	return r.mockItem, r.mockErr
-}
+	input := &model.ItemInput{
+		Category:    "test",
+		Title:       "test",
+		Description: "test",
+		ImageKey:    "test",
+		Price:       10000,
+		Quantity:    1000,
+	}
 
-func TestItemService_Create(t *testing.T) {
+	wantResult := &model.Item{
+		ID:          0,
+		Category:    "test",
+		Title:       "test",
+		Description: "test",
+		ImageKey:    "test",
+		Price:       10000,
+		Quantity:    1000,
+		CreatedAt:   now,
+		UpdatedAt:   now,
+	}
+
 	tests := []struct {
 		name       string
-		mockInput  *model.ItemInput
-		mockOutput model.Item
-		mockErr    error
-		wantOutput model.Item
+		setupMock  func(m *mock.MockRepository)
+		wantResult *model.Item
 		wantErr    bool
 	}{
 		{
 			name: "success",
-			mockInput: &model.ItemInput{
-				Category:    "Tests",
-				Title:       "Testing",
-				Description: "Testing service create",
-				ImageKey:    "Test",
-				Price:       1000,
-				Quantity:    10,
+			setupMock: func(m *mock.MockRepository) {
+				m.EXPECT().
+					Create(context.Background(), input).
+					Return(model.Item{
+						ID:          0,
+						Category:    "test",
+						Title:       "test",
+						Description: "test",
+						ImageKey:    "test",
+						Price:       10000,
+						Quantity:    1000,
+						CreatedAt:   now,
+						UpdatedAt:   now,
+					}, nil).
+					Once()
 			},
-			mockOutput: model.Item{
-				ID:          0,
-				Category:    "Tests",
-				Title:       "Testing",
-				Description: "Testing service create",
-				ImageKey:    "Test",
-				Price:       1000,
-				Quantity:    10,
-				CreatedAt:   time.Now(),
-				UpdatedAt:   time.Now(),
-			},
-			mockErr: nil,
-			wantOutput: model.Item{
-				ID:          0,
-				Category:    "Tests",
-				Title:       "Testing",
-				Description: "Testing service create",
-				ImageKey:    "Test",
-				Price:       1000,
-				Quantity:    10,
-				CreatedAt:   time.Now(),
-				UpdatedAt:   time.Now(),
-			},
-			wantErr: false,
+			wantResult: wantResult,
+			wantErr:    false,
 		},
 		{
 			name: "failure",
-			mockInput: &model.ItemInput{
-				Category:    "Tests",
-				Title:       "Testing",
-				Description: "Testing service create",
-				ImageKey:    "Test",
-				Price:       1000,
-				Quantity:    10,
+			setupMock: func(m *mock.MockRepository) {
+				m.EXPECT().
+					Create(context.Background(), input).
+					Return(model.Item{}, errors.New("fail")).
+					Once()
 			},
-			mockOutput: model.Item{},
-			mockErr:    fmt.Errorf("some error"),
-			wantOutput: model.Item{},
+			wantResult: wantResult,
 			wantErr:    true,
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			repo := &MockRepository{mockItem: tt.mockOutput, mockErr: tt.mockErr}
-			service := New(repo)
+			mockRepo := mock.NewMockRepository(t)
+			tt.setupMock(mockRepo)
 
-			row, err := service.Create(context.Background(), tt.mockInput)
+			service := New(mockRepo)
+			res, err := service.Create(context.Background(), input)
 			if tt.wantErr {
 				require.Error(t, err)
 				return
 			}
+
 			require.NoError(t, err)
-			assert.Equal(t, tt.wantOutput.ID, row.ID)
-			assert.Equal(t, tt.wantOutput.Category, row.Category)
-			assert.Equal(t, tt.wantOutput.Title, row.Title)
-			assert.Equal(t, tt.wantOutput.Description, row.Description)
-			assert.Equal(t, tt.wantOutput.ImageKey, row.ImageKey)
-			assert.Equal(t, tt.wantOutput.Price, row.Price)
-			assert.Equal(t, tt.wantOutput.Quantity, row.Quantity)
+			assert.Equal(t, tt.wantResult, res)
+			assert.Equal(t, tt.wantResult.ID, res.ID)
+			assert.Equal(t, tt.wantResult.Category, res.Category)
+			assert.Equal(t, tt.wantResult.Title, res.Title)
+			assert.Equal(t, tt.wantResult.Description, res.Description)
+			assert.Equal(t, tt.wantResult.ImageKey, res.ImageKey)
+			assert.Equal(t, tt.wantResult.Price, res.Price)
+			assert.Equal(t, tt.wantResult.Quantity, res.Quantity)
+			assert.Equal(t, tt.wantResult.CreatedAt, res.CreatedAt)
+			assert.Equal(t, tt.wantResult.UpdatedAt, res.UpdatedAt)
 		})
 	}
 }
