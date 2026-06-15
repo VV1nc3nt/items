@@ -1,9 +1,9 @@
 package item_manager
 
 type ItemService struct {
-	repo Repository
+	repo repository
 }
 
-func New(repo Repository) *ItemService {
+func New(repo repository) *ItemService {
 	return &ItemService{repo: repo}
 }

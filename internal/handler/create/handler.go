@@ -11,10 +11,10 @@ import (
 
 type Handler struct {
 	pb.UnimplementedItemServiceServer
-	service ItemManagerService
+	service itemManagerService
 }
 
-func New(service ItemManagerService) *Handler {
+func New(service itemManagerService) *Handler {
 	return &Handler{service: service}
 }
 
@@ -27,7 +27,6 @@ func (h *Handler) Create(ctx context.Context, req *pb.CreateRequest) (*pb.Create
 		Price:       req.Price,
 		Quantity:    req.Quantity,
 	}
-
 
 	res, err := h.service.Create(ctx, input)
 	if err != nil {

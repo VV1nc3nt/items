@@ -6,7 +6,6 @@ import (
 	"testing"
 	"time"
 
-	mock "github.com/VV1nc3nt/items/internal/handler/create/mocks"
 	"github.com/VV1nc3nt/items/internal/model"
 	pb "github.com/VV1nc3nt/items/internal/pb/items"
 	"github.com/stretchr/testify/assert"
@@ -37,13 +36,13 @@ func TestHandlerCreate(t *testing.T) {
 
 	tests := []struct {
 		name      string
-		setupMock func(m *mock.MockItemManagerService)
+		setupMock func(m *MockitemManagerService)
 		wantResp  *pb.CreateResponse
 		wantErr   bool
 	}{
 		{
 			name: "success",
-			setupMock: func(m *mock.MockItemManagerService) {
+			setupMock: func(m *MockitemManagerService) {
 				m.EXPECT().
 					Create(context.Background(), wantInput).
 					Return(&model.Item{
@@ -76,7 +75,7 @@ func TestHandlerCreate(t *testing.T) {
 		},
 		{
 			name: "failure",
-			setupMock: func(m *mock.MockItemManagerService) {
+			setupMock: func(m *MockitemManagerService) {
 				m.EXPECT().
 					Create(context.Background(), wantInput).
 					Return(nil, errors.New("failed")).
@@ -89,7 +88,7 @@ func TestHandlerCreate(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			mockService := mock.NewMockItemManagerService(t)
+			mockService := NewMockitemManagerService(t)
 			tt.setupMock(mockService)
 
 			h := New(mockService)
@@ -102,15 +101,7 @@ func TestHandlerCreate(t *testing.T) {
 
 			require.NoError(t, err)
 			require.NotNil(t, resp)
-			assert.Equal(t, tt.wantResp, resp)
-			assert.Equal(t, tt.wantResp.Item.Category, resp.Item.Category)
-			assert.Equal(t, tt.wantResp.Item.Title, resp.Item.Title)
-			assert.Equal(t, tt.wantResp.Item.Description, resp.Item.Description)
-			assert.Equal(t, tt.wantResp.Item.ImageKey, resp.Item.ImageKey)
-			assert.Equal(t, tt.wantResp.Item.Quantity, resp.Item.Quantity)
-			assert.Equal(t, tt.wantResp.Item.Price, resp.Item.Price)
-			assert.Equal(t, tt.wantResp.Item.CreatedAt, resp.Item.CreatedAt)
-			assert.Equal(t, tt.wantResp.Item.UpdatedAt, resp.Item.UpdatedAt)
+			assert.Equal(t, tt.wantResp.Item, resp.Item)
 		})
 	}
 }

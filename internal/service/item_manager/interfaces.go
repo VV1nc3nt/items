@@ -6,6 +6,7 @@ import (
 	"github.com/VV1nc3nt/items/internal/model"
 )
 
-type Repository interface {
+//mockery:generate: true
+type repository interface {
 	Create(ctx context.Context, in *model.ItemInput) (model.Item, error)
 }
