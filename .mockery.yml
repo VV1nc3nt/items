@@ -1,0 +1,10 @@
+all: false
+recursive: true
+template: testify
+formatter: goimports
+dir: "{{.InterfaceDir}}/mocks"
+filename: "{{.InterfaceName | snakecase}}.go"
+pkgname: "{{.SrcPackageName}}"
+structname: "Mock{{.InterfaceName}}"
+packages:
+  github.com/VV1nc3nt/items:
