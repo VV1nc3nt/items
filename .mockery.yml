@@ -2,8 +2,8 @@ all: false
 recursive: true
 template: testify
 formatter: goimports
-dir: "{{.InterfaceDir}}"
-filename: "mock_{{.InterfaceName | snakecase}}.go"
+dir: "{{.InterfaceDir}}/mocks"
+filename: "{{.InterfaceName | snakecase}}.go"
 pkgname: "{{.SrcPackageName}}"
 structname: "Mock{{.InterfaceName}}"
 packages:

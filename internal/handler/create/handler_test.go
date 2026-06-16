@@ -6,6 +6,7 @@ import (
 	"testing"
 	"time"
 
+	mock "github.com/VV1nc3nt/items/internal/handler/create/mocks"
 	"github.com/VV1nc3nt/items/internal/model"
 	pb "github.com/VV1nc3nt/items/internal/pb/items"
 	"github.com/stretchr/testify/assert"
@@ -36,13 +37,13 @@ func TestHandlerCreate(t *testing.T) {
 
 	tests := []struct {
 		name      string
-		setupMock func(m *MockitemManagerService)
+		setupMock func(m *mock.MockitemManagerService)
 		wantResp  *pb.CreateResponse
 		wantErr   bool
 	}{
 		{
 			name: "success",
-			setupMock: func(m *MockitemManagerService) {
+			setupMock: func(m *mock.MockitemManagerService) {
 				m.EXPECT().
 					Create(context.Background(), wantInput).
 					Return(&model.Item{
@@ -75,7 +76,7 @@ func TestHandlerCreate(t *testing.T) {
 		},
 		{
 			name: "failure",
-			setupMock: func(m *MockitemManagerService) {
+			setupMock: func(m *mock.MockitemManagerService) {
 				m.EXPECT().
 					Create(context.Background(), wantInput).
 					Return(nil, errors.New("failed")).
@@ -88,7 +89,7 @@ func TestHandlerCreate(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			mockService := NewMockitemManagerService(t)
+			mockService := mock.NewMockitemManagerService(t)
 			tt.setupMock(mockService)
 
 			h := New(mockService)

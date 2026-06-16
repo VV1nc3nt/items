@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/VV1nc3nt/items/internal/model"
+	mock "github.com/VV1nc3nt/items/internal/service/item_manager/mocks"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -37,13 +38,13 @@ func TestItemServiceCreate(t *testing.T) {
 
 	tests := []struct {
 		name       string
-		setupMock  func(m *Mockrepository)
+		setupMock  func(m *mock.Mockrepository)
 		wantResult *model.Item
 		wantErr    bool
 	}{
 		{
 			name: "success",
-			setupMock: func(m *Mockrepository) {
+			setupMock: func(m *mock.Mockrepository) {
 				m.EXPECT().
 					Create(context.Background(), input).
 					Return(model.Item{
@@ -64,7 +65,7 @@ func TestItemServiceCreate(t *testing.T) {
 		},
 		{
 			name: "failure",
-			setupMock: func(m *Mockrepository) {
+			setupMock: func(m *mock.Mockrepository) {
 				m.EXPECT().
 					Create(context.Background(), input).
 					Return(model.Item{}, errors.New("fail")).
@@ -77,7 +78,7 @@ func TestItemServiceCreate(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			mockRepo := NewMockrepository(t)
+			mockRepo := mock.NewMockrepository(t)
 			tt.setupMock(mockRepo)
 
 			service := New(mockRepo)
