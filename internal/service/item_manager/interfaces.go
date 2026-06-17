@@ -8,5 +8,6 @@ import (
 
 //mockery:generate: true
 type repository interface {
-	Create(ctx context.Context, in *model.ItemInput) (model.Item, error)
+	Create(ctx context.Context, in *model.ItemCreateInput) (model.Item, error)
+	Get(ctx context.Context, in *model.ItemGetInput) (model.Item, error)
 }

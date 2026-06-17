@@ -5,7 +5,7 @@ import (
 	"net"
 	"os"
 
-	"github.com/VV1nc3nt/items/internal/handler/create"
+	"github.com/VV1nc3nt/items/internal/handler"
 	pb "github.com/VV1nc3nt/items/internal/pb/items"
 	"github.com/VV1nc3nt/items/internal/repository/postgres"
 	"github.com/VV1nc3nt/items/internal/service/item_manager"
@@ -46,7 +46,7 @@ func run() int {
 
 	repo := postgres.New(pool)
 	srv := item_manager.New(repo)
-	h := create.New(srv)
+	h := handler.New(srv)
 
 	lis, err := net.Listen("tcp", ":50051")
 	if err != nil {

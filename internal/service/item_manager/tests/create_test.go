@@ -1,4 +1,4 @@
-package item_manager
+package tests
 
 import (
 	"context"
@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/VV1nc3nt/items/internal/model"
+	"github.com/VV1nc3nt/items/internal/service/item_manager"
 	mock "github.com/VV1nc3nt/items/internal/service/item_manager/mocks"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -15,7 +16,7 @@ import (
 func TestItemServiceCreate(t *testing.T) {
 	now := time.Now()
 
-	input := &model.ItemInput{
+	input := &model.ItemCreateInput{
 		Category:    "test",
 		Title:       "test",
 		Description: "test",
@@ -47,17 +48,7 @@ func TestItemServiceCreate(t *testing.T) {
 			setupMock: func(m *mock.Mockrepository) {
 				m.EXPECT().
 					Create(context.Background(), input).
-					Return(model.Item{
-						ID:          0,
-						Category:    "test",
-						Title:       "test",
-						Description: "test",
-						ImageKey:    "test",
-						Price:       10000,
-						Quantity:    1000,
-						CreatedAt:   now,
-						UpdatedAt:   now,
-					}, nil).
+					Return(*wantResult, nil).
 					Once()
 			},
 			wantResult: wantResult,
@@ -81,7 +72,7 @@ func TestItemServiceCreate(t *testing.T) {
 			mockRepo := mock.NewMockrepository(t)
 			tt.setupMock(mockRepo)
 
-			service := New(mockRepo)
+			service := item_manager.New(mockRepo)
 			res, err := service.Create(context.Background(), input)
 			if tt.wantErr {
 				require.Error(t, err)
@@ -89,6 +80,7 @@ func TestItemServiceCreate(t *testing.T) {
 			}
 
 			require.NoError(t, err)
+			require.NotNil(t, res)
 			assert.Equal(t, tt.wantResult, res)
 		})
 	}

@@ -1,4 +1,4 @@
-package create
+package handler
 
 import (
 	"context"
@@ -9,17 +9,8 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
-type Handler struct {
-	pb.UnimplementedItemServiceServer
-	service itemManagerService
-}
-
-func New(service itemManagerService) *Handler {
-	return &Handler{service: service}
-}
-
 func (h *Handler) Create(ctx context.Context, req *pb.CreateRequest) (*pb.CreateResponse, error) {
-	input := &model.ItemInput{
+	input := &model.ItemCreateInput{
 		Category:    req.Category,
 		Title:       req.Title,
 		Description: req.Description,
