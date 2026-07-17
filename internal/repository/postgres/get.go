@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"time"
 
 	"github.com/VV1nc3nt/items/internal/model"
 	"github.com/jackc/pgx/v5"
@@ -26,11 +25,7 @@ func (r *ItemRepository) Get(ctx context.Context, in *model.ItemGetInput) (model
 
 	item, err = pgx.CollectOneRow(rows, pgx.RowToStructByName[model.Item])
 	if errors.Is(err, pgx.ErrNoRows) {
-		return item, &model.DatabaseError{
-			Time:      time.Now(),
-			Operation: "SELECT",
-			Err:       fmt.Errorf("there is no such item with ID: %d", in.ID),
-		}
+		return item, model.DatabaseError
 	}
 	if err != nil {
 		return item, fmt.Errorf("db get item: %w", err)

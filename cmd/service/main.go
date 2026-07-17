@@ -5,12 +5,14 @@ import (
 	"net"
 	"os"
 
+	"buf.build/go/protovalidate"
 	"github.com/VV1nc3nt/items/internal/handler"
 	pb "github.com/VV1nc3nt/items/internal/pb/items"
 	"github.com/VV1nc3nt/items/internal/repository/postgres"
 	"github.com/VV1nc3nt/items/internal/service/item_manager"
 	setupdb "github.com/VV1nc3nt/items/internal/setup/db"
 	"github.com/VV1nc3nt/items/pkg/logger"
+	protovalidate_middleware "github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/protovalidate"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/joho/godotenv"
 	"google.golang.org/grpc"
@@ -54,7 +56,17 @@ func run() int {
 		return exitErr
 	}
 
-	s := grpc.NewServer()
+	validator, err := protovalidate.New()
+	if err != nil {
+		log.Error("failed to init validator", "err", err)
+		return exitErr
+	}
+
+	s := grpc.NewServer(
+		grpc.ChainUnaryInterceptor(
+			protovalidate_middleware.UnaryServerInterceptor(validator),
+		),
+	)
 	pb.RegisterItemServiceServer(s, h)
 	reflection.Register(s)
 
