@@ -8,7 +8,7 @@ import (
 	"github.com/jackc/pgx/v5"
 )
 
-func (r *ItemRepository) Create(ctx context.Context, in *model.ItemInput) (model.Item, error) {
+func (r *ItemRepository) Create(ctx context.Context, in *model.ItemCreateInput) (model.Item, error) {
 	query := `
 		INSERT INTO items (category, title, description, image_key, price, quantity)
 		VALUES ($1, $2, $3, $4, $5, $6)
@@ -27,13 +27,13 @@ func (r *ItemRepository) Create(ctx context.Context, in *model.ItemInput) (model
 		in.Quantity,
 	)
 	if err != nil {
-		return item, fmt.Errorf("insert item: %w", err)
+		return item, fmt.Errorf("db insert item: %w", err)
 	}
 	defer rows.Close()
 
 	item, err = pgx.CollectOneRow(rows, pgx.RowToStructByName[model.Item])
 	if err != nil {
-		return item, fmt.Errorf("insert item: %w", err)
+		return item, fmt.Errorf("db insert item: %w", err)
 	}
 
 	return item, nil

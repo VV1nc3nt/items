@@ -7,7 +7,7 @@ install:
 	GOBIN=$(LOCAL_BIN) go install github.com/vektra/mockery/v3@v3.7.1
 
 protogen:
-	$(LOCAL_BIN)/buf generate proto
+	$(LOCAL_BIN)/buf generate proto --path proto/items
 
 mocks:
 	$(LOCAL_BIN)/mockery

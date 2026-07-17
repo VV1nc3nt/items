@@ -39,7 +39,7 @@ func (_m *Mockrepository) EXPECT() *Mockrepository_Expecter {
 }
 
 // Create provides a mock function for the type Mockrepository
-func (_mock *Mockrepository) Create(ctx context.Context, in *model.ItemInput) (model.Item, error) {
+func (_mock *Mockrepository) Create(ctx context.Context, in *model.ItemCreateInput) (model.Item, error) {
 	ret := _mock.Called(ctx, in)
 
 	if len(ret) == 0 {
@@ -48,15 +48,15 @@ func (_mock *Mockrepository) Create(ctx context.Context, in *model.ItemInput) (m
 
 	var r0 model.Item
 	var r1 error
-	if returnFunc, ok := ret.Get(0).(func(context.Context, *model.ItemInput) (model.Item, error)); ok {
+	if returnFunc, ok := ret.Get(0).(func(context.Context, *model.ItemCreateInput) (model.Item, error)); ok {
 		return returnFunc(ctx, in)
 	}
-	if returnFunc, ok := ret.Get(0).(func(context.Context, *model.ItemInput) model.Item); ok {
+	if returnFunc, ok := ret.Get(0).(func(context.Context, *model.ItemCreateInput) model.Item); ok {
 		r0 = returnFunc(ctx, in)
 	} else {
 		r0 = ret.Get(0).(model.Item)
 	}
-	if returnFunc, ok := ret.Get(1).(func(context.Context, *model.ItemInput) error); ok {
+	if returnFunc, ok := ret.Get(1).(func(context.Context, *model.ItemCreateInput) error); ok {
 		r1 = returnFunc(ctx, in)
 	} else {
 		r1 = ret.Error(1)
@@ -71,20 +71,20 @@ type Mockrepository_Create_Call struct {
 
 // Create is a helper method to define mock.On call
 //   - ctx context.Context
-//   - in *model.ItemInput
+//   - in *model.ItemCreateInput
 func (_e *Mockrepository_Expecter) Create(ctx any, in any) *Mockrepository_Create_Call {
 	return &Mockrepository_Create_Call{Call: _e.mock.On("Create", ctx, in)}
 }
 
-func (_c *Mockrepository_Create_Call) Run(run func(ctx context.Context, in *model.ItemInput)) *Mockrepository_Create_Call {
+func (_c *Mockrepository_Create_Call) Run(run func(ctx context.Context, in *model.ItemCreateInput)) *Mockrepository_Create_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		var arg0 context.Context
 		if args[0] != nil {
 			arg0 = args[0].(context.Context)
 		}
-		var arg1 *model.ItemInput
+		var arg1 *model.ItemCreateInput
 		if args[1] != nil {
-			arg1 = args[1].(*model.ItemInput)
+			arg1 = args[1].(*model.ItemCreateInput)
 		}
 		run(
 			arg0,
@@ -99,7 +99,73 @@ func (_c *Mockrepository_Create_Call) Return(item model.Item, err error) *Mockre
 	return _c
 }
 
-func (_c *Mockrepository_Create_Call) RunAndReturn(run func(ctx context.Context, in *model.ItemInput) (model.Item, error)) *Mockrepository_Create_Call {
+func (_c *Mockrepository_Create_Call) RunAndReturn(run func(ctx context.Context, in *model.ItemCreateInput) (model.Item, error)) *Mockrepository_Create_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// Get provides a mock function for the type Mockrepository
+func (_mock *Mockrepository) Get(ctx context.Context, in *model.ItemGetInput) (model.Item, error) {
+	ret := _mock.Called(ctx, in)
+
+	if len(ret) == 0 {
+		panic("no return value specified for Get")
+	}
+
+	var r0 model.Item
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, *model.ItemGetInput) (model.Item, error)); ok {
+		return returnFunc(ctx, in)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context, *model.ItemGetInput) model.Item); ok {
+		r0 = returnFunc(ctx, in)
+	} else {
+		r0 = ret.Get(0).(model.Item)
+	}
+	if returnFunc, ok := ret.Get(1).(func(context.Context, *model.ItemGetInput) error); ok {
+		r1 = returnFunc(ctx, in)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// Mockrepository_Get_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Get'
+type Mockrepository_Get_Call struct {
+	*mock.Call
+}
+
+// Get is a helper method to define mock.On call
+//   - ctx context.Context
+//   - in *model.ItemGetInput
+func (_e *Mockrepository_Expecter) Get(ctx any, in any) *Mockrepository_Get_Call {
+	return &Mockrepository_Get_Call{Call: _e.mock.On("Get", ctx, in)}
+}
+
+func (_c *Mockrepository_Get_Call) Run(run func(ctx context.Context, in *model.ItemGetInput)) *Mockrepository_Get_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 *model.ItemGetInput
+		if args[1] != nil {
+			arg1 = args[1].(*model.ItemGetInput)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *Mockrepository_Get_Call) Return(item model.Item, err error) *Mockrepository_Get_Call {
+	_c.Call.Return(item, err)
+	return _c
+}
+
+func (_c *Mockrepository_Get_Call) RunAndReturn(run func(ctx context.Context, in *model.ItemGetInput) (model.Item, error)) *Mockrepository_Get_Call {
 	_c.Call.Return(run)
 	return _c
 }

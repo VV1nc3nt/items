@@ -1,4 +1,4 @@
-package create
+package tests
 
 import (
 	"context"
@@ -6,7 +6,8 @@ import (
 	"testing"
 	"time"
 
-	mock "github.com/VV1nc3nt/items/internal/handler/create/mocks"
+	"github.com/VV1nc3nt/items/internal/handler"
+	mock "github.com/VV1nc3nt/items/internal/handler/mocks"
 	"github.com/VV1nc3nt/items/internal/model"
 	pb "github.com/VV1nc3nt/items/internal/pb/items"
 	"github.com/stretchr/testify/assert"
@@ -26,7 +27,7 @@ func TestHandlerCreate(t *testing.T) {
 		Price:       10000,
 	}
 
-	wantInput := &model.ItemInput{
+	wantInput := &model.ItemCreateInput{
 		Category:    "test",
 		Title:       "test",
 		Description: "test",
@@ -37,13 +38,13 @@ func TestHandlerCreate(t *testing.T) {
 
 	tests := []struct {
 		name      string
-		setupMock func(m *mock.MockitemManagerService)
+		setupMock func(m *mock.MockItemManagerService)
 		wantResp  *pb.CreateResponse
 		wantErr   bool
 	}{
 		{
 			name: "success",
-			setupMock: func(m *mock.MockitemManagerService) {
+			setupMock: func(m *mock.MockItemManagerService) {
 				m.EXPECT().
 					Create(context.Background(), wantInput).
 					Return(&model.Item{
@@ -76,7 +77,7 @@ func TestHandlerCreate(t *testing.T) {
 		},
 		{
 			name: "failure",
-			setupMock: func(m *mock.MockitemManagerService) {
+			setupMock: func(m *mock.MockItemManagerService) {
 				m.EXPECT().
 					Create(context.Background(), wantInput).
 					Return(nil, errors.New("failed")).
@@ -89,10 +90,10 @@ func TestHandlerCreate(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			mockService := mock.NewMockitemManagerService(t)
+			mockService := mock.NewMockItemManagerService(t)
 			tt.setupMock(mockService)
 
-			h := New(mockService)
+			h := handler.New(mockService)
 
 			resp, err := h.Create(context.Background(), req)
 			if tt.wantErr {

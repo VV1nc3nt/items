@@ -7,7 +7,7 @@ import (
 	"github.com/VV1nc3nt/items/internal/model"
 )
 
-func (s *ItemService) Create(ctx context.Context, in *model.ItemInput) (*model.Item, error) {
+func (s *ItemService) Create(ctx context.Context, in *model.ItemCreateInput) (*model.Item, error) {
 
 	row, err := s.repo.Create(ctx, in)
 	if err != nil {
